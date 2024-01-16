@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    table {
+      text-align: center;
+      margin: auto;
+      font-family: 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    input, button {
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    button.add-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    button.add-btn:hover {
+      background-color: #45a049;
+    }
+    button.delete-btn {
+      background-color: #a81919;
+      color: white;
+    }
+    button.delete-btn:hover {
+      background-color: #7a1616;
+    }
+    button.edit-btn {
+      background-color: #FFD700; 
+      color: black; 
+    }
+    button.edit-btn:hover {
+      background-color: #FFD700; 
+    }
+  </style>
+</head>
+<body>
+  <div align="center">
+    <h1>Grade Calculator</h1>
+
+    <button class="add-btn" onclick="addActivity()">Add Activity</button>
+    <label for="activity">Activity</label>
+    <input type="text" id="activity" size="3">
+    <label for="weight">Weight</label>
+    <input type="text" id="weight" size="3"><br>
+
+    <button class="add-btn" onclick="addGrade()">Add Grade</button>
+    <label for="grade">Grade</label>
+    <input type="text" id="grade" size="3">
+    <label for="activityNo">Activity No</label>
+    <input type="text" id="activityNo" size="3"><br>
+
+    <button class = "edit-btn" onclick="editActivity()">Edit Activity name</button>
+    <label for="editActivityNo">Activity No</label>
+    <input type="text" id="editActivityNo" size="3"><br>
+
+    <button class="delete-btn" onclick="deleteActivity()">Delete Activity</button>
+
+  
+
+    <table border="2" id="theTable" style="width:70%">
+      <tr>
+        <th>No</th>
+        <th>Activity</th>
+        <th>Weight</th>
+        <th>Grade</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Lab1</td>
+        <td>10</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Lab2</td>
+        <td>20</td>
+        <td></td>
+      </tr>
+    </table>
+
+    <p id="errMsg" style="color:red;">Error Message: </p>
+
+    <script>
+      let noActivity = 2;
+      let totalWeight = 30;
+
+      function addActivity() {
+        const activityName = document.getElementById("activity").value.trim();
+        const activityWeight = parseInt(document.getElementById("weight").value);
+
+        if (activityName === "") {
+          displayError("Activity name is rejected.");
+        } else if (isNaN(activityWeight) || activityWeight > 100 || activityWeight < 1) {
+          displayError("Weight is rejected.");
+        } else {
+          noActivity++;
+          totalWeight += activityWeight;
+
+          const table = document.getElementById("theTable");
+          const newRow = table.insertRow(-1);
+          newRow.insertCell().innerHTML = noActivity;
+          newRow.insertCell().innerHTML = activityName;
+          newRow.insertCell().innerHTML = activityWeight;
+          newRow.insertCell();
+
+          clearInputs(["activity", "weight"]);
+          displayError("");
+        }
+      }
+
+      function deleteActivity() {
+        const table = document.getElementById("theTable");
+
+        if (noActivity > 0) {
+          table.deleteRow(-1);
+          noActivity--;
+
+          displayError("");
+        } else {
+          displayError("No more activities to remove.");
+        }
+      }
+      function editActivity() {
+        const editActivityNo = parseInt(document.getElementById("editActivityNo").value);
+        const table = document.getElementById("theTable");
+
+        if (editActivityNo >= 1 && editActivityNo <= noActivity) {
+          
+          const newActivityName = prompt("Enter the new activity name:");
+          if (newActivityName !== null) {
+            const row = table.rows[editActivityNo - 1];
+            row.cells[1].innerHTML = newActivityName;
+          }
+        
+          clearInputs(["editActivityNo"]);
+          displayError("");
+        } else {
+          displayError("Invalid Activity No to edit.");
+        }
+      }
+
+      function addGrade() {
+  const grade = parseFloat(document.getElementById("grade").value);
+  const activityNo = parseInt(document.getElementById("activityNo").value);
+
+  if (isNaN(grade) || grade > 100 || grade < 0) {
+    displayError("Grade is rejected.");
+  } else if (activityNo < 1 || activityNo > noActivity) {
+    displayError("Activity No is rejected.");
+  } else {
+    const table = document.getElementById("theTable");
+    const row = table.rows[activityNo];
+
+    if (row.cells[3].innerHTML !== "") {
+      
+      row.cells[3].innerHTML = grade;
+    } else {
+    
+      row.cells[3].innerHTML = grade;
+    }
+
+    clearInputs(["grade", "activityNo"]);
+    displayError("");
+  }
+}
+
+      function displayError(message) {
+        document.getElementById("errMsg").textContent = "Error Message: " + message;
+      }
+
+      function clearInputs(ids) {
+        ids.forEach(id => document.getElementById(id).value = "");
+      }
+    </script>
+  </div>
+</body>
+</html>
